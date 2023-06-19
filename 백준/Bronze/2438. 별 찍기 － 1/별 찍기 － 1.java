@@ -11,9 +11,10 @@ public class Main {
                 for (int j = 0; j <= i; j++) {
                     bufferedWriter.write("*");
                 }
-                bufferedWriter.flush();
                 bufferedWriter.newLine();
             }
+            bufferedWriter.flush();
+            bufferedWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
