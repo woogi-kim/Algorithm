@@ -3,21 +3,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-class Node {
-    int x, y;
-
-    public Node(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 public class Main {
     public static char[][] arr;
     public static boolean[][] visit;
     public static int[] dx = {0, 1, 0, -1};
     public static int[] dy = {-1, 0, 1, 0};
     public static int N;
+    public static int count;
     public static ArrayList<Integer> ans = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -35,8 +27,11 @@ public class Main {
 
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= N; j++) {
+                count = 0;
                 if (!visit[i][j] && arr[i][j] == '1') {
-                    bfs(i, j);
+                    dfs(i, j);
+                    count++;
+                    ans.add(count);
                 }
             }
         }
@@ -50,26 +45,18 @@ public class Main {
         System.out.println(sb);
     }
 
-    public static void bfs(int x, int y) {
-        Queue<Node> q = new LinkedList<>();
-        q.add(new Node(x, y));
-
+    public static void dfs(int x, int y) {
         visit[x][y] = true;
-        int count = 1;
-        while (!q.isEmpty()) {
-            Node curNode = q.poll();
-            for (int i = 0; i < 4; i++) {
-                int nx = curNode.x + dx[i];
-                int ny = curNode.y + dy[i];
-                if ((1 <= nx && nx <= N) && (1 <= ny && ny <= N)) {
-                    if (!visit[nx][ny] && arr[nx][ny] == '1') {
-                        q.add(new Node(nx, ny));
-                        visit[nx][ny] = true;
-                        count++;
-                    }
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if ((1 <= nx && nx <= N) && (1 <= ny && ny <= N)) {
+                if (!visit[nx][ny] && arr[nx][ny] == '1') {
+                    count++;
+                    dfs(nx, ny);
                 }
             }
         }
-        ans.add(count);
+        
     }
 }
