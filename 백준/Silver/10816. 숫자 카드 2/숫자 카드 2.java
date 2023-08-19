@@ -36,33 +36,32 @@ public class Main {
     }
 
     public static int lowerBound(int i) {
-        int end = n - 1;
+        int end = n;
         int start = 0;
         int mid;
-        while (end >= start) {
+        while (end > start) {
             mid = (end + start) / 2;
             if (check[i] > own[mid]) {
                 start = mid + 1;
             } else {
-                end = mid - 1;
+                end = mid;
             }
         }
-        return end;
+        return start;
     }
 
     public static int upperBound(int i) {
-        int end = n - 1;
+        int end = n;
         int start = 0;
         int mid;
-        while (end >= start) {
+        while (end > start) {
             mid = (end + start) / 2;
             if (check[i] >= own[mid]) {
                 start = mid + 1;
             } else {
-                end = mid - 1;
+                end = mid;
             }
         }
-        return end;
+        return start;
     }
 }
-
