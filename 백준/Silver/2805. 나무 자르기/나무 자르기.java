@@ -23,7 +23,7 @@ public class Main {
             max = Math.max(input, max);
             length[i] = input;
         }
-        max++;
+        
         while (max >= min) {
             mid = (max + min) / 2;
             long sum = 0;
