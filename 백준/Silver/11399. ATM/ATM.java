@@ -30,11 +30,7 @@ public class Main {
 
         int sum = 0;
         for (int i = 0; i < n; i++) {
-            int tmp = 0;
-            for (int j = 0; j <= i; j++) {
-                tmp += arr[j];
-            }
-            sum += tmp;
+            sum += arr[i] * (n - i);
         }
         System.out.println(sum);
     }
