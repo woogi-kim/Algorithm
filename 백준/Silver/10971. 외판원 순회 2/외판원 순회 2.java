@@ -22,33 +22,27 @@ public class Main {
                 arr[i][j] = Integer.parseInt(s[j]);
             }
         }
-        
-        backtraking(0);
+
+        for (int i = 0; i < n; i++) {
+            visited[i] = true;
+            backtraking(i, i, 0, 0);
+            visited[i] = false;
+        }
         System.out.println(ans);
     }
 
-    public static void backtraking(int depth) {
-        if (depth == n) {
-            int sum = 0;
-            for (int i = 0; i < n - 1; i++) {
-                if (arr[res[i]][res[i + 1]] != 0) {
-                    sum += arr[res[i]][res[i + 1]];
-                } else {
-                    return;
-                }
+    public static void backtraking(int start, int now, int depth, int sum) {
+        if (depth == n - 1) {
+            if (arr[now][start] != 0) {
+                sum += arr[now][start];
+                ans = Math.min(sum, ans);
             }
-            if (arr[res[n - 1]][res[0]] != 0) {
-                sum += arr[res[n - 1]][res[0]];
-            } else {
-                return;
-            }
-            ans = Math.min(ans, sum);
+            return;
         }
         for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
+            if (!visited[i] && arr[now][i] > 0) {
                 visited[i] = true;
-                res[depth] = i;
-                backtraking(depth + 1);
+                backtraking(start, i, depth + 1, sum + arr[now][i]);
                 visited[i] = false;
             }
         }
