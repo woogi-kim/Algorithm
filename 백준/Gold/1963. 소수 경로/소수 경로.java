@@ -51,6 +51,7 @@ public class Main {
                 }
             }
         }
+        System.out.println("impossible");
     }
 
     public static void eratos() {
