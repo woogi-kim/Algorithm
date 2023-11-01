@@ -5,10 +5,8 @@ import java.util.*;
 
 public class Main {
     public static int n, start, target;
-    public static StringBuilder ans;
     public static boolean[] visited;
-    public static int[] parent;
-    public static char[] parentOp;
+    public static String[] command;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -19,11 +17,10 @@ public class Main {
             target = Integer.parseInt(st.nextToken());
 
             visited = new boolean[10000];
-            parent = new int[10000];
-            parentOp = new char[10000];
-            ans = new StringBuilder();
+            command = new String[10000];
+            Arrays.fill(command, "");
             bfs(start);
-            System.out.println(ans);
+            System.out.println(command[target]);
         }
     }
 
@@ -34,11 +31,6 @@ public class Main {
         while (!q.isEmpty()) {
             Integer current = q.remove();
             if (current == target) {
-                while (current != start) {
-                    ans.append(parentOp[current]);
-                    current = parent[current];
-                }
-                ans.reverse();
                 return;
             }
             for (int i = 0; i < 4; i++) {
@@ -54,51 +46,21 @@ public class Main {
                         op = 'S';
                         break;
                     case 2:
-                        tmp = shiftLeft(current);
+                        tmp = (current % 1000) * 10 + current / 1000;
                         op = 'L';
                         break;
                     case 3:
-                        tmp = shiftRight(current);
+                        tmp = (current % 10) * 1000 + current / 10;
                         op = 'R';
                         break;
                 }
                 if (!visited[tmp]) {
                     visited[tmp] = true;
-                    parent[tmp] = current;
-                    parentOp[tmp] = op;
+                    command[tmp] = command[current] + op;
                     q.add(tmp);
                 }
             }
         }
     }
 
-    public static int shiftRight(int current) {
-        StringBuilder currentStr = new StringBuilder(String.valueOf(current));
-        if (currentStr.length() < 4) {
-            int n = 4 - currentStr.length();
-            for (int i = 0; i < n; i++) {
-                currentStr.insert(0, "0");
-            }
-        }
-        char[] currentChars = currentStr.toString().toCharArray();
-        char lastDigit = currentChars[3];
-        for (int i = 3; i >= 1; i--) {
-            currentChars[i] = currentChars[i-1];
-        }
-        currentChars[0] = lastDigit;
-        return Integer.parseInt(String.valueOf(currentChars));
-    }
-
-    public static int shiftLeft(int current) {
-        char[] currentChars = String.valueOf(current).toCharArray();
-        char[] newChars = new char[4];
-        if (currentChars.length == 4) {
-            for (int j = 0; j < 4; j++) {
-                newChars[j] = currentChars[j < 3 ? j + 1 : 0];
-            }
-            return Integer.parseInt(String.valueOf(newChars));
-        } else {
-            return current * 10;
-        }
-    }
 }
