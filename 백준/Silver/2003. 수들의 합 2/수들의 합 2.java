@@ -22,25 +22,23 @@ public class Main {
             input[i] = Integer.parseInt(st.nextToken());
         }
 
-        dp[0] = input[0];
-        if (dp[0] == m) {
-            ans++;
-        }
-        for (int i = 1; i < n; i++) {
-            dp[i] = dp[i - 1] + input[i];
-            if (dp[i] == m) {
+        int e = 0;
+        int s = 0;
+        int sum = 0;
+        while (true) {
+            if (sum >= m) {
+                sum -= input[s];
+                s++;
+            } else if (e == n) {
+                break;
+            } else {
+                sum += input[e];
+                e++;
+            }
+            if (sum == m) {
                 ans++;
             }
         }
-
-        for (int i = 1; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                if (dp[j] - dp[i - 1] == m) {
-                    ans++;
-                }
-            }
-        }
-
         System.out.println(ans);
     }
 
