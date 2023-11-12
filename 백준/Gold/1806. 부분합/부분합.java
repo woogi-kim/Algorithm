@@ -14,7 +14,7 @@ public class Main {
         String[] tmp = bf.readLine().split(" ");
         n = Integer.parseInt(tmp[0]);
         s = Integer.parseInt(tmp[1]);
-        input = new int[n + 1];
+        input = new int[n];
         tmp = bf.readLine().split(" ");
         for (int i = 0; i < tmp.length; i++) {
             input[i] = Integer.parseInt(tmp[i]);
@@ -23,15 +23,21 @@ public class Main {
         int start = 0;
         int end = 0;
         int sum = 0;
-        while (end <= n && start <= n) {
-            if (sum < s) {
-                sum += input[end];
-                end++;
-            } else {
-                ans = Math.min(ans, end - start);
+        while (true) {
+            if (start == n) {
+                break;
+            }
+            if (sum >= s) {
                 sum -= input[start];
                 start++;
+                ans = Math.min(ans, end - start + 1);
+            } else if (end == n) {
+                start++;
+            } else {
+                sum += input[end];
+                end++;
             }
+
         }
 
         System.out.println(ans == Integer.MAX_VALUE ? 0 : ans);
