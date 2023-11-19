@@ -48,7 +48,7 @@ public class Main {
         visit[s] = true;
         if (parent[s] != -2) {
             for (int i = 0; i < n; i++) {
-                if(parent[i]== s && !visit[i]){
+                if(parent[i]== s){
                     countLeaf(i);
                     isLeaf = false;
                 }
