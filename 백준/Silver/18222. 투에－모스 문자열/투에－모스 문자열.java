@@ -25,6 +25,6 @@ public class Main {
             n -= square;
         }
 
-        System.out.println((count % 2 == 0) ? n : ((n == 0) ? 1 : 0));
+        System.out.println((count % 2 == 0) ? n : 1 - n);
     }
 }
