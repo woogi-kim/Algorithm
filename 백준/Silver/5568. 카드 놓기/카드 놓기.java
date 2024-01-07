@@ -9,7 +9,7 @@ public class Main {
     public static int k;
     public static int[] input;
     public static boolean[] isIncluded;
-    public static ArrayList<String> arr = new ArrayList<>();
+    public static HashSet<String> set = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -22,12 +22,12 @@ public class Main {
             input[i] = Integer.parseInt(bf.readLine());
         }
         solve(0, "");
-        System.out.println(arr.size());
+        System.out.println(set.size());
     }
 
     public static void solve(int depth, String current) {
-        if (depth == k && !arr.contains(current)) {
-            arr.add(current);
+        if (depth == k) {
+            set.add(current);
             return;
         }
         for (int i = 0; i < n; i++) {
