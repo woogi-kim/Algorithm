@@ -2,11 +2,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 
 public class Main {
     public static int n;
     public static int m;
-    public static int[][] edge;
+    //    public static int[][] edge;
+    public static PriorityQueue<int[]> edge = new PriorityQueue<>((a, b) -> {
+        return a[2] - b[2];
+    });
     public static int[] parent;
     public static int cnt;
     public static long min;
@@ -20,7 +24,7 @@ public class Main {
         m = Integer.parseInt(s[1]);
 
 
-        edge = new int[m + 1][3];
+//        edge = new int[m + 1][3];
         parent = new int[n + 1];
         for (int i = 0; i <= n; i++) {
             parent[i] = i;
@@ -28,39 +32,38 @@ public class Main {
 
         for (int i = 1; i <= m; i++) {
             s = bf.readLine().split(" ");
-            edge[i][0] = Integer.parseInt(s[0]);
-            edge[i][1] = Integer.parseInt(s[1]);
-            edge[i][2] = Integer.parseInt(s[2]);
-            max += edge[i][2];
+            int start = Integer.parseInt(s[0]);
+            int end = Integer.parseInt(s[1]);
+            int weight = Integer.parseInt(s[2]);
+            edge.add(new int[]{start, end, weight});
+            max += weight;
         }
 
-        Arrays.sort(edge, (arr1, arr2) -> arr1[2] - arr2[2]);
-
-
-
         for (int i = 1; i <= m; i++) {
-            int parentA = find(edge[i][0]);
-            int parentB = find(edge[i][1]);
-            if(parentA != parentB) {
-                min += edge[i][2];
+            int[] current = edge.poll();
+            int parentA = find(current[0]);
+            int parentB = find(current[1]);
+
+            if (parentA != parentB) {
+                min += current[2];
                 union(parentA, parentB);
                 cnt++;
             }
         }
 
-        if(cnt == n - 1) {
+        if (cnt == n - 1) {
             System.out.println(max - min);
         } else {
             System.out.println(-1);
         }
 
     }
-    
+
     public static int find(int x) {
         if (x == parent[x]) {
             return x;
         } else {
-            return find(parent[x]);
+            return parent[x] = find(parent[x]);
         }
     }
 
