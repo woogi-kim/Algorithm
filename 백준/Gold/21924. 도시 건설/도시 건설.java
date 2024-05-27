@@ -8,8 +8,10 @@ public class Main {
     public static int m;
     public static int[][] edge;
     public static int[] parent;
+    public static int cnt;
     public static long min;
     public static long max;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -37,30 +39,23 @@ public class Main {
 
 
         for (int i = 1; i <= m; i++) {
-            if(find(edge[i][0]) != find(edge[i][1])) {
+            int parentA = find(edge[i][0]);
+            int parentB = find(edge[i][1]);
+            if(parentA != parentB) {
                 min += edge[i][2];
-                union(edge[i][0], edge[i][1]);
+                union(parentA, parentB);
+                cnt++;
             }
         }
 
-        if(isAllConnected()) {
+        if(cnt == n - 1) {
             System.out.println(max - min);
         } else {
             System.out.println(-1);
         }
 
     }
-
-    public static boolean isAllConnected() {
-        int root = parent[1];
-        for (int i = 2; i <= n; i++) {
-            if(find(i) != root) {
-                return false;
-            }
-        }
-        return true;
-    }
-
+    
     public static int find(int x) {
         if (x == parent[x]) {
             return x;
