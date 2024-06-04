@@ -54,20 +54,14 @@ public class Main {
         if (depth == add) {
             int[] sum = new int[mul + 1];
             int idx = 0;
+            sum[0] = list.get(0);
             for (int i = 0; i < n - 1; i++) {
-                if (i == 0 && operator[i]) {
-                    sum[idx] += list.get(i) + list.get(i+1);
-                } else if (operator[i] && operator[i - 1]) {
+                if(operator[i]) {
                     sum[idx] += list.get(i + 1);
-                } else if (!operator[i]) {
+                } else {
                     idx++;
-                    sum[idx] += list.get(i + 1);
-                } else if (operator[i] && !operator[i - 1]) {
-                    sum[idx] += list.get(i + 1);
+                    sum[idx] = list.get(i + 1);
                 }
-            }
-            if (!operator[0]) {
-                sum[0] = list.get(0);
             }
             int res = 1;
             for (int s : sum) {
