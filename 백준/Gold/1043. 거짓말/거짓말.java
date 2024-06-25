@@ -2,15 +2,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
 	public static int n;
 	public static int m;
 	public static int truthCount;
-	public static int[] truthList;
+	public static int[] knowsTruth;
+	public static int[] parents;
 	public static ArrayList<int[]> party;
-	public static boolean[] canJoin;
 	public static int ans;
 
 	public static void main(String[] args) throws IOException {
@@ -19,58 +18,49 @@ public class Main {
 		n = Integer.parseInt(s[0]);
 		m = Integer.parseInt(s[1]);
 
+		parents = new int[n + 1];
 		party = new ArrayList<>();
-		canJoin = new boolean[m];
 
-		Arrays.fill(canJoin, true);
+		for (int i = 0; i < n; i++) {
+			parents[i] = i;
+		}
 
 		s = bf.readLine().split(" ");
 		truthCount = Integer.parseInt(s[0]);
-		truthList = new int[truthCount];
+		knowsTruth = new int[truthCount];
 		for (int i = 0; i < truthCount; i++) {
-			truthList[i] = Integer.parseInt(s[i + 1]);
+			knowsTruth[i] = Integer.parseInt(s[i + 1]);
 		}
 
 		for (int i = 0; i < m; i++) {
 			s = bf.readLine().split(" ");
+
 			int partyMemberCount = Integer.parseInt(s[0]);
 
 			int[] currentParty = new int[partyMemberCount];
-
 			for (int j = 0; j < partyMemberCount; j++) {
 				currentParty[j] = Integer.parseInt(s[j + 1]);
 			}
-
 			party.add(currentParty);
 		}
 
-		for (int i = 0; i < truthCount; i++) {
-			for (int j = 0; j < party.size(); j++) {
-				for (int k = 0; k < party.get(j).length; k++) {
-					if (party.get(j)[k] == truthList[i]) {
-						canJoin[j] = false;
-						for (int member : party.get(j)) {
-							if (member != truthList[i]) {
-								search(member);
-							}
-						}
-					}
-				}
+		for (int i = 0; i < m; i++) {
+			int firstMember = party.get(i)[0];
+			for (int j = 1; j < party.get(i).length; j++) {
+				union(firstMember, party.get(i)[j]);
 			}
 		}
 
-		// for (int i = 0; i < list.size(); i++) {
-		// 	for (int j = 0; j < party.size(); j++) {
-		// 		for (int k = 0; k < party.get(j).length; k++) {
-		// 			if (party.get(j)[k] == list.get(i)) {
-		// 				canJoin[j] = false;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		for (int i = 0; i < party.size(); i++) {
-			if (canJoin[i]) {
+		for (int i = 0; i < m; i++) {
+			int leader = party.get(i)[0];
+			boolean canJoin = true;
+			for (int j = 0; j < truthCount; j++) {
+				if (find(leader) == find(knowsTruth[j])) {
+					canJoin = false;
+					break;
+				}
+			}
+			if (canJoin) {
 				ans++;
 			}
 		}
@@ -78,21 +68,19 @@ public class Main {
 		System.out.println(ans);
 	}
 
-	public static void search(int member) {
-		for (int i = 0; i < party.size(); i++) {
-			if (!canJoin[i]) {
-				continue;
-			}
-			for (int j = 0; j < party.get(i).length; j++) {
-				if (party.get(i)[j] == member) {
-					canJoin[i] = false;
-					for (int searchMember : party.get(i)) {
-						if (searchMember != member) {
-							search(searchMember);
-						}
-					}
-				}
-			}
+	public static void union(int a, int b) {
+		int aParent = find(a);
+		int bParent = find(b);
+		if (a != b) {
+			parents[bParent] = aParent;
 		}
 	}
+
+	public static int find(int a) {
+		if (parents[a] == a) {
+			return a;
+		}
+		return parents[a] = find(parents[a]);
+	}
+
 }
