@@ -1,22 +1,24 @@
 import java.util.*;
 
-
+class Node {
+    int idx;
+    int cost;
+    
+    Node (int idx, int cost) {
+        this.idx = idx;
+        this.cost = cost;
+    }
+}
 class Solution {
     public ArrayList<Node>[] graph;
     public int minSummit = Integer.MAX_VALUE;
     public int minIntensity = Integer.MAX_VALUE;
-    public boolean[] isSummits;
     
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
         
         graph = new ArrayList[n + 1];
         for (int i = 0; i <= n; i++) {
             graph[i] = new ArrayList<>();
-        }
-        
-        isSummits = new boolean[n + 1];
-        for (int i=0; i<summits.length; i++) {
-            isSummits[summits[i]] = true;
         }
         
         for (int i = 0; i < paths.length; i++) {
@@ -28,9 +30,9 @@ class Solution {
             graph[end].add(new Node(start, cost));
         }
         
-      
-        dijkstra(0, n, summits, gates);
-        
+        for (int gate : gates) {
+            dijkstra(gate, n, summits);
+        }
         
         int[] answer = new int[2];
         answer[0] = minSummit;
@@ -39,35 +41,54 @@ class Solution {
         return answer;
     }
     
-    public void dijkstra(int start, int n, int[] summits, int[] gates) {
+    public void dijkstra(int start, int n, int[] summits) {
         int[] intensities = new int[n + 1];
-        Arrays.fill(intensities, Integer.MAX_VALUE);
+        Arrays.fill(intensities, Integer.MIN_VALUE);
         
         boolean[] visited = new boolean[n + 1];
         
         PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
+        pq.add(new Node(start, 0));
         
-        for(int gate: gates) {
-            intensities[gate] = 0;
-            pq.add(new Node(gate, 0));
-        }
+        intensities[start] = 0;
+        visited[start] = true;
         
         while (!pq.isEmpty()) {
             Node current = pq.poll();
             
-            if (intensities[current.idx] < current.cost) continue;
-            
-            
-            for (Node node : graph[current.idx]) { 
-                if (intensities[node.idx] <= Math.max(current.cost, node.cost)) continue;
-                intensities[node.idx] = Math.max(current.cost, node.cost);
-                if (isSummits[node.idx]) continue;
-                pq.add(new Node(node.idx, intensities[node.idx]));
-            }        
+            for (Node node : graph[current.idx]) {
+                if (visited[node.idx]) {
+                    continue;
+                }
+                System.out.println("node : " + current.idx + " " + node.idx);
+                if (current.idx == start) {
+                    System.out.println("intensity : " + intensities[node.idx] + " " + node.cost);
+                    
+                    intensities[node.idx] = node.cost;
+                    visited[node.idx] = true;
+                    pq.add(new Node(node.idx, node.cost));
+                } else {
+                    if (intensities[node.idx] == Integer.MIN_VALUE) {
+                        System.out.println("intensity : " + intensities[node.idx] + " " + Math.max(intensities[current.idx], node.cost));
+                        intensities[node.idx] = Math.max(intensities[current.idx], node.cost);
+                        pq.add(new Node(node.idx, Math.max(intensities[current.idx], node.cost)));
+                        visited[node.idx] = true;
+                        
+                    } else {
+                        if (intensities[node.idx] > node.cost) {
+                            System.out.println("intensity : " + intensities[node.idx] + " " + node.cost);
+                            intensities[node.idx] = node.cost;
+                            pq.add(new Node(node.idx, node.cost));
+                            visited[node.idx] = true;
+                            
+                        }
+                    }
+                        
+                        
 
+                }
+            }   
         }
-   
-        
         
         for (int summit : summits) {
             if (minIntensity > intensities[summit]) {
@@ -78,15 +99,5 @@ class Solution {
             }
         }
         System.out.println("summit : "+ minSummit + " "+minIntensity);
-    }
-}
-
-class Node {
-    int idx;
-    int cost;
-    
-    Node (int idx, int cost) {
-        this.idx = idx;
-        this.cost = cost;
     }
 }
