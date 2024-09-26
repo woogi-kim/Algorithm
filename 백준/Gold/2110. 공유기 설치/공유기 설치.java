@@ -1,51 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
 
 public class Main {
-    public static int n, c;
-    public static long[] arr;
-    public static long max;
-    public static long min;
-    public static long mid;
+	public static int n;
+	public static int c;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bufferedReader.readLine());
-        n = Integer.parseInt(st.nextToken());
-        c = Integer.parseInt(st.nextToken());
-        arr = new long[n];
+	public static int[] house;
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
-        for (int i = 0; i < n; i++) {
-            int input = Integer.parseInt(bufferedReader.readLine());
-            arr[i] = input;
-        }
+		String[] s = bf.readLine().split(" ");
+		n = Integer.parseInt(s[0]);
+		c = Integer.parseInt(s[1]);
 
-        Arrays.sort(arr);
-        max = arr[n - 1] - arr[0];
-        min = 1;
-        long d = 0;
-        long ans = 0;
-        while (max >= min) {
-            mid = (max + min) / 2;
-            long sum = 1;
-            long start = arr[0];
-            for (int i = 0; i < n; i++) {
-                d = arr[i] - start;
-                if (d >= mid) {
-                    sum++;
-                    start = arr[i];
-                }
-            }
+		house = new int[n];
+		for (int i = 0; i < n; i++) {
+			house[i] = Integer.parseInt(bf.readLine());
+		}
 
-            if (sum >= c) {
-                ans = mid;
-                min = mid + 1;
-            } else {
-                max = mid - 1;
-            }
-        }
-        System.out.println(ans);
-    }
+		Arrays.sort(house);
+
+		int minDist = 1;
+		int maxDist = house[n - 1] - house[0] + 1;
+
+		while (minDist + 1 < maxDist) {
+			int midDist = (minDist + maxDist) / 2;
+
+			int lastHouse = house[0];
+			int router = 1;
+
+			for (int i = 1; i < n; i++) {
+				int nextHouse = lastHouse + midDist;
+
+				if (house[i] >= nextHouse) {
+					lastHouse = house[i];
+					router++;
+				}
+			}
+
+
+			if (router >= c) {
+				minDist = midDist;
+			} else {
+				maxDist = midDist;
+			}
+		}
+
+		System.out.println(minDist);
+
+
+	}
+
+
+
 }
