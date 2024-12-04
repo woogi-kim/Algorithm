@@ -1,53 +1,52 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
-    public static ArrayList<Integer> plus = new ArrayList<>();
-    public static ArrayList<Integer> minus = new ArrayList<>();
-    public static Integer one = 0;
-    public static Integer n;
-    public static int sum;
+	public static int n;
+	public static List<Integer> negatives = new ArrayList<>();
+	public static List<Integer> positives = new ArrayList<>();
+	public static int ans;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(bf.readLine());
-        for (int i = 0; i < n; i++) {
-            Integer input = Integer.parseInt(bf.readLine());
-            if (input > 1)
-                plus.add(input);
-            else if (input < 1)
-                minus.add(input);
-            else
-                one++;
-        }
-        Collections.sort(plus, Collections.reverseOrder());
-        Collections.sort(minus);
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
-        if ((minus.size() % 2) == 1) {
-            sum += minus.get(minus.size() - 1);
-        }
+		n = Integer.parseInt(bf.readLine());
 
-        if (minus.size() > 1) {
-            for (int i = 0; i < minus.size() - 1; i += 2) {
-                sum += minus.get(i) * minus.get(i + 1);
-            }
-        }
+		for (int i = 0; i < n; i++) {
+			int tmp = Integer.parseInt(bf.readLine());
+			if (tmp > 0) {
+				positives.add(tmp);
+			} else {
+				negatives.add(tmp);
+			}
+		}
 
-        if ((plus.size() % 2) == 1) {
-            sum += plus.get(plus.size() - 1);
-        }
+		Collections.sort(positives);
+		Collections.sort(negatives);
 
+		for (int i = positives.size() - 1; i >= 0; i -= 2) {
+			if (i == 0) {
+				ans += positives.get(i);
+				break;
+			}
 
-        if (plus.size() > 1) {
-            for (int i = 0; i < plus.size() - 1; i += 2) {
-                sum += plus.get(i) * plus.get(i + 1);
-            }
-        }
+			ans += Math.max((positives.get(i) * positives.get(i - 1)), positives.get(i) + positives.get(i - 1));
+		}
 
-        sum += one;
-        System.out.println(sum);
-    }
+		for (int i = 0; i < negatives.size(); i += 2) {
+			if (i == negatives.size() - 1) {
+				ans += negatives.get(i);
+				break;
+			}
+
+			ans += Math.max((negatives.get(i) * negatives.get(i + 1)), negatives.get(i) + negatives.get(i + 1));
+		}
+
+		System.out.println(ans);
+	}
 }
-
