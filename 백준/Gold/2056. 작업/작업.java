@@ -1,55 +1,50 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Main {
-    public static int n;
-    public static int[] cost;
-    public static int[] dp;
-    public static boolean[][] isPre;
+	public static int n;
+	public static int[] dp;
+	public static int[] times;
+	public static ArrayList<Integer>[] graph;
+	public static int ans;
 
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(bf.readLine());
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(bf.readLine());
-        cost = new int[n + 1];
-        dp = new int[n + 1];
-        isPre = new boolean[n + 1][n + 1];
+		dp = new int[n + 1];
+		times = new int[n + 1];
 
-        for (int i = 1; i <= n; i++) {
-            String[] s = bf.readLine().split(" ");
-            cost[i] = Integer.parseInt(s[0]);
-            int m = Integer.parseInt(s[1]);
-            for (int j = 0; j < m; j++) {
-                isPre[i][Integer.parseInt(s[2 + j])] = true;
-            }
-        }
+		graph = new ArrayList[n + 1];
+		for (int i = 0; i <= n; i++) {
+			graph[i] = new ArrayList<>();
+		}
 
+		for (int i = 1; i <= n; i++) {
+			String[] s = bf.readLine().split(" ");
+			times[i] = Integer.parseInt(s[0]);
 
-        dp[1] = cost[1];
+			int inward = Integer.parseInt(s[1]);
+			if (inward == 0) dp[i] = times[i];
 
-        for (int i = 2; i <= n; i++) {
-            int max = 0;
-            for (int j = 1; j < i; j++) {
-                if (isPre[i][j]) {
-                    max = Math.max(dp[j], max);
-                }
-            }
-            dp[i] = max == 0 ? cost[i] : max + cost[i];
-        }
+			for (int j = 0; j < inward; j++) {
+				int start = Integer.parseInt(s[j + 2]);
+				graph[start].add(i);
+			}
+		}
 
-        int ans = 0;
-        
-        for (int i = 1; i <= n; i++) {
-            ans = Math.max(ans, dp[i]);
-        }
+		for (int i = 1; i <= n; i++) {
+			for (int next : graph[i]) {
+				dp[next] = Math.max(dp[next], dp[i] + times[next]);
+			}
+		}
 
-        System.out.println(ans);
-    }
+		for (int i = 1; i <= n; i++) {
+			ans = Math.max(dp[i], ans);
+		}
 
+		System.out.println(ans);
+	}
 }
-
-
-
