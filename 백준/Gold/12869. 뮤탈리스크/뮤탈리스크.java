@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -29,6 +27,7 @@ public class Main {
 	public static int n;
 	public static int[] arr;
 	public static int ans;
+	public static int[][][] visited;
 	public static int[] dx1 = {9, 3, 1};
 	public static int[] dx2 = {1, 3, 9};
 
@@ -36,7 +35,7 @@ public class Main {
 		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 		n = Integer.parseInt(bf.readLine());
 
-		arr = new int[n];
+		arr = new int[3];
 
 		String[] s = bf.readLine().split(" ");
 		for (int i = 0; i < n; i++) {
@@ -50,11 +49,18 @@ public class Main {
 
 	public static void bfs() {
 		Queue<Node> q = new LinkedList<>();
-		int[] firstArr = Arrays.copyOf(arr, arr.length);
+		int[] firstArr = Arrays.copyOf(arr, 3);
 		q.add(new Node(firstArr, 0));
 
-		HashSet<String> set = new HashSet<>();
-		set.add(getKey(firstArr));
+		visited = new int[61][61][61];
+
+		visited[arr[0]][arr[1]][arr[2]] = 0;
+
+		for (int i = 0; i < 61; i++) {
+			for (int j = 0; j < 61; j++) {
+				Arrays.fill(visited[i][j], -1);
+			}
+		}
 
 		while (!q.isEmpty()) {
 			Node cur = q.poll();
@@ -64,27 +70,31 @@ public class Main {
 			}
 
 			for (int i = 0; i < 3; i++) {
-				int[] tmp = new int[n];
-				for (int j = 0; j < n; j++) {
+				int[] tmp = new int[3];
+				for (int j = 0; j < 3; j++) {
 					tmp[j] = cur.nums[j] - dx1[(j + i) % 3];
+					tmp[j] = Math.max(tmp[j], 0);
 				}
 
-				if (!set.contains(getKey(tmp))) {
-					set.add(getKey(tmp));
-					q.add(new Node(tmp, cur.count + 1));
+				if (visited[tmp[0]][tmp[1]][tmp[2]] != -1) {
+					continue;
 				}
+				visited[tmp[0]][tmp[1]][tmp[2]] = cur.count + 1;
+				q.add(new Node(tmp, cur.count + 1));
 			}
 
 			for (int i = 0; i < 3; i++) {
-				int[] tmp = new int[n];
-				for (int j = 0; j < n; j++) {
+				int[] tmp = new int[3];
+				for (int j = 0; j < 3; j++) {
 					tmp[j] = cur.nums[j] - dx2[(j + i) % 3];
+					tmp[j] = Math.max(tmp[j], 0);
 				}
 
-				if (!set.contains(getKey(tmp))) {
-					set.add(getKey(tmp));
-					q.add(new Node(tmp, cur.count + 1));
+				if (visited[tmp[0]][tmp[1]][tmp[2]] != -1) {
+					continue;
 				}
+				visited[tmp[0]][tmp[1]][tmp[2]] = cur.count + 1;
+				q.add(new Node(tmp, cur.count + 1));
 			}
 		}
 
@@ -98,13 +108,5 @@ public class Main {
 		}
 
 		return true;
-	}
-
-	public static String getKey(int[] nums) {
-		StringBuilder sb = new StringBuilder();
-		for (int num : nums) {
-			sb.append(num).append(',');
-		}
-		return sb.toString();
 	}
 }
