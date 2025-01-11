@@ -60,11 +60,12 @@ public class Main {
 		}
 
 		int ans = 0;
+		HashSet<Integer> set = new HashSet<>();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
 				if (arr[i][j] == 0) {
 					int count = 1;
-					HashSet<Integer> set = new HashSet<>();
+					set.clear();
 					for (int k = 0; k < 4; k++) {
 						int ni = i + dx[k];
 						int nj = j + dy[k];
