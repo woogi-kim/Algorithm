@@ -2,54 +2,59 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.PriorityQueue;
 
 public class Main {
 	public static int d, n, m;
-	public static int[] rocks;
-	public static int ans;
+	public static int[] arr;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
 		String[] s = bf.readLine().split(" ");
 
 		d = Integer.parseInt(s[0]);
 		n = Integer.parseInt(s[1]);
 		m = Integer.parseInt(s[2]);
 
-		rocks = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			rocks[i] = Integer.parseInt(bf.readLine());
+		arr = new int[n + 1];
+		for (int i = 0; i < n; i++) {
+			arr[i] = Integer.parseInt(bf.readLine());
 		}
+		arr[n] = d;
 
-		Arrays.sort(rocks);
+		Arrays.sort(arr);
 
-		long lo = 0;
-		long hi = d;
-
-		while (lo <= hi) {
-			long mid = (lo + hi) / 2;
-
-			int removeCount = 0;
-
-			int startIdx = 0;
-			for (int i = 1; i <= n; i++) {
-				if (mid <= rocks[i] - rocks[startIdx]) {
-					startIdx = i;
-				} else {
-					removeCount++;
-				}
-			}
-
-			if (removeCount > m) {
-				hi = mid - 1;
-			} else {
-				ans = (int)mid;
-				lo = mid + 1;
-			}
-		}
-
-		System.out.println(ans);
+		System.out.println(binarySearch());
 	}
 
+	public static int binarySearch() {
+		int l = 1;
+		int r = d + 1;
+
+		while (l + 1 < r) {
+			int mid = (l + r) / 2;
+
+			if (check(mid)) {
+				l = mid;
+			} else {
+				r = mid;
+			}
+		}
+
+		return l;
+	}
+
+	public static boolean check(int distance) {
+		int curNum = 0;
+		int removedCount = 0;
+
+		for (int i = 0; i < n; i++) {
+			if (arr[i] - curNum >= distance) {
+				curNum = arr[i];
+			} else {
+				removedCount++;
+			}
+		}
+
+		return m >= removedCount;
+	}
 }
