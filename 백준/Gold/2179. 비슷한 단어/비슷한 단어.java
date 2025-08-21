@@ -3,10 +3,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.PriorityQueue;
 
+class Word {
+	int idx;
+	String s;
+
+	public Word(int idx, String s) {
+		this.idx = idx;
+		this.s = s;
+	}
+}
+
 public class Main {
-	public static String[] words;
+	public static Word[] words;
 	public static int n;
 
 	public static void main(String[] args) throws IOException {
@@ -14,37 +25,57 @@ public class Main {
 
 		n = Integer.parseInt(bf.readLine());
 
-		words = new String[n];
+		words = new Word[n];
 		for (int i = 0; i < n; i++) {
-			words[i] = bf.readLine();
+			words[i] = new Word(i, bf.readLine());
 		}
 
-		int max = 0;
-		String first = "";
-		String second = "";
+		Arrays.sort(words, (a, b) -> a.s.compareTo(b.s));
+		int maxLen = 0;
 
-		for (int i = 0; i < n; i++) {
-			if (words[i].length() < max) {
-				continue;
-			}
-			for (int j = i + 1; j < n; j++) {
-				if (words[j].length() < max) {
-					continue;
-				}
-				
-				int duplicateLength = getDuplicateLength(words[i], words[j]);
+		// for (Word w : words) {
+		// 	System.out.println(w.s);
+		// }
+		ArrayList<Word> candidates = new ArrayList<>();
+		for (int i = 0; i < n - 1; i++) {
+			int curLen = getDuplicateLength(words[i].s, words[i + 1].s);
 
-				if (duplicateLength > max) {
-					max = duplicateLength;
-					first = words[i];
-					second = words[j];
+			if (curLen >= maxLen) {
+				if (curLen > maxLen) {
+					candidates.clear();
 				}
+				maxLen = curLen;
+
+				candidates.add(words[i]);
+				candidates.add(words[i + 1]);
+				//
+				// System.out.println("curLen = " + curLen);
+				// System.out.println(words[i].s);
+				// System.out.println(words[i + 1].s);
 			}
 		}
+		if (maxLen == 0) {
+			System.out.println(words[0].s);
+			System.out.println(words[1].s);
+			return;
+		}
 
-		System.out.println(first);
-		System.out.println(second);
+		Collections.sort(candidates, (a, b) -> a.idx - b.idx);
 
+		// System.out.println("candidate");
+		// for (Word w : candidates) {
+		// 	System.out.println(w.s);
+		// }
+		// System.out.println("---");
+
+		Word first = candidates.get(0);
+		System.out.println(first.s);
+		for (int i = 1; i < candidates.size(); i++) {
+			if (getDuplicateLength(first.s, candidates.get(i).s) == maxLen) {
+				System.out.println(candidates.get(i).s);
+				break;
+			}
+		}
 	}
 
 	public static int getDuplicateLength(String a, String b) {
