@@ -24,7 +24,14 @@ public class Main {
 		String second = "";
 
 		for (int i = 0; i < n; i++) {
+			if (words[i].length() < max) {
+				continue;
+			}
 			for (int j = i + 1; j < n; j++) {
+				if (words[j].length() < max) {
+					continue;
+				}
+				
 				int duplicateLength = getDuplicateLength(words[i], words[j]);
 
 				if (duplicateLength > max) {
