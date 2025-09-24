@@ -1,7 +1,9 @@
-SELECT CONCAT('/home/grep/src/', BOARD_ID, '/', FILE_ID, FILE_NAME, FILE_EXT) AS FILE_PATH
-FROM USED_GOODS_FILE
-WHERE BOARD_ID = (SELECT B.BOARD_ID
-                  FROM USED_GOODS_BOARD AS B
-                  ORDER BY B.VIEWS DESC
-                  LIMIT 1)
-ORDER BY FILE_PATH DESC;
+
+select concat("/home/grep/src/",b.board_id,"/",f.file_id,"",f.file_name,f.file_ext) as file_path
+from USED_GOODS_BOARD as b
+join USED_GOODS_FILE as f on b.board_id = f.board_id
+where b.views in (
+    select max(views)
+    from USED_GOODS_BOARD
+)
+order by f.file_id desc
