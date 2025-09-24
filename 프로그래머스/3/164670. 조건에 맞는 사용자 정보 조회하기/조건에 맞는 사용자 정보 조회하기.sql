@@ -1,14 +1,6 @@
-# SELECT USER_ID, NICKNAME, CONCAT(CITY, ' ', STREET_ADDRESS1, ' ', STREET_ADDRESS2) AS 전체주소,
-# CONCAT(SUBSTRING(TLNO, 1, 3),'-',SUBSTRING(TLNO, 4, 4),'-',SUBSTRING(TLNO, 8, 4)) AS 전화번호
-# FROM USED_GOODS_USER
-# WHERE USER_ID IN (SELECT WRITER_ID
-#                  FROM USED_GOODS_BOARD
-#                  GROUP BY WRITER_ID HAVING COUNT(*) >= 3)
-# ORDER BY USER_ID DESC;
+select u.user_id as user_id, u.nickname as nickname, concat(u.CITY, " ", STREET_ADDRESS1, " ", STREET_ADDRESS2) as 전체주소, concat(substring(tlno, 1, 3), '-', substring(tlno, 4, 4), '-', substring(tlno, 8, 4)) as 전화번호
 
-SELECT U.USER_ID, U.NICKNAME, CONCAT(CITY, ' ', STREET_ADDRESS1, ' ', STREET_ADDRESS2) AS 전체주소,
-CONCAT(SUBSTRING(TLNO, 1, 3),'-',SUBSTRING(TLNO, 4, 4),'-',SUBSTRING(TLNO, 8, 4)) AS 전화번호
-FROM USED_GOODS_BOARD AS B
-LEFT JOIN USED_GOODS_USER AS U ON B.WRITER_ID = U.USER_ID
-GROUP BY U.USER_ID HAVING COUNT(*) >= 3
-ORDER BY U.USER_ID DESC
+from USED_GOODS_BOARD as b
+join USED_GOODS_USER u on b.writer_id = u.user_id
+group by u.user_id having count(u.user_id) >= 3
+order by u.user_id desc
